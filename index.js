@@ -17,28 +17,31 @@ client.on('qr', qr => {
 
 client.on('ready', () => {
     console.log('Client ' + client.info.pushname + ' is ready!');
-    console.log('Positive/negative sentiment score corresponds to positive/negative sentiment\n')
+    console.log('Positive/negative sentiment score corresponds to positive/negative sentiment')
+    console.log('Press the `r` key to view results of all received messages\n')
 });
 
 // listening to all incoming messages
 client.on('message_create', async message => {
-	console.log(message.body);
+    if (!contact_from.isMe) {
+        console.log(message.body);
 
-    let contact_from = await message.getContact();
-    // var contact_name = contact_from.pushname;
-    var contact_number = contact_from.number;
+        let contact_from = await message.getContact();
+        // var contact_name = contact_from.pushname;
+        var contact_number = contact_from.number;
 
-    // perform sentiment analysis on each msg received
-    var result = sentiment.analyze(message.body);
-    console.log("sentiment score: " + result["comparative"]);
+        // perform sentiment analysis on each msg received
+        var result = sentiment.analyze(message.body);
+        console.log("sentiment score: " + result["comparative"]);
 
-    results.push({
-        'message': message.body,
-        'score': result['comparative'],
-        // 'from_name': contact_name,
-        'from_number': contact_number,
-        
-    });
+        results.push({
+            'message': message.body,
+            'score': result['comparative'],
+            // 'from_name': contact_name,
+            'from_number': contact_number,
+            
+        });
+    }
 });
 
 client.initialize();
